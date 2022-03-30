@@ -5,9 +5,10 @@ using CsvHelper;
 using System.Globalization;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using System.Text;
 
 
-namespace TESTxml
+namespace csvReader
 {
     public class Program
     {
@@ -15,10 +16,10 @@ namespace TESTxml
         {
             using (var reader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\csvExcel.csv"))
             {
-
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";", Encoding = Encoding.UTF8 };
+                using var csv = new CsvReader(reader, config);
                 {
-                    var records = csv.GetRecords<Launch>().ToList();
+                    var records = csv.GetRecords<Launch>();
                 }
             }
         }
