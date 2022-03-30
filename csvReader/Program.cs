@@ -4,37 +4,43 @@ using System.IO;
 using CsvHelper;
 using System.Globalization;
 using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 using System.Text;
 
 
-namespace csvReader
+namespace TESTxml
 {
-    public class Program
+    public interface IAnalogProvider
+    {
+        IEnumerable<T> GetItems<T>(string fileName) where T : Analog;
+    }
+
+    public class CsvAnalogProvider : IAnalogProvider
+    {
+        public IEnumerable<T> GetItems<T>(string fileName) where T : Analog
+        {
+            var config = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";", Encoding = Encoding.UTF8 };
+
+            using var reader = new StreamReader(fileName);
+            using var csv = new CsvReader(reader, config);
+
+            foreach (var record in csv.GetRecords<T>())
+                yield return record;
+        }
+    }
+
+    public partial class Program
     {
         public static void Main(string[] args)
         {
-            using (var streamReader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\csvExcel.csv"))
+
+            var provider = new CsvAnalogProvider();
+
+            foreach (var item in provider.GetItems<House>(@"C:\Users\Izagakhmaevra\Desktop\Excel\Дома.csv"))
             {
-                using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-                {
-                    var records = csv.GetRecords<Launch>();
-                    //var records = csv.GetRecords<Launch>().ToList();
-                }
+                Console.WriteLine(item.Title);
             }
-        }
 
-        public class Launch
-        {
-            [Name("ID")]
-            public int Id { get; set; }
-            [Name("Name")]
-            public string Name { get; set; }
-            [Name("Form")]
-            public string Form { get; set; }
-            [Name("Laung")]
-            public string Laung { get; set; }
-
+            Console.ReadKey();
         }
     }
 }
