@@ -14,12 +14,12 @@ namespace csvReader
     {
         public static void Main(string[] args)
         {
-            using (var reader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\csvExcel.csv"))
+            using (var streamReader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\csvExcel.csv"))
             {
-                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";", Encoding = Encoding.UTF8 };
-                using var csv = new CsvReader(reader, config);
+                using (var csv = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {
                     var records = csv.GetRecords<Launch>();
+                    //var records = csv.GetRecords<Launch>().ToList();
                 }
             }
         }
@@ -30,6 +30,10 @@ namespace csvReader
             public int Id { get; set; }
             [Name("Name")]
             public string Name { get; set; }
+            [Name("Form")]
+            public string Form { get; set; }
+            [Name("Laung")]
+            public string Laung { get; set; }
 
         }
     }
