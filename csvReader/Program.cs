@@ -1,26 +1,43 @@
 ﻿using System;
-using System.Globalization;
+using System.Linq;
+using System.IO;
 using CsvHelper;
+using System.Globalization;
+using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
 
-public class Program
+
+namespace TESTxml
 {
-    public static void Main(string[] args)
+    public class Program
     {
-        using (var reader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\TestExelCSV.csv"))
-        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        public static void Main(string[] args)
         {
-            var records = csv.GetRecords<Foo>();
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = "\t"
+            };
+
+            using (var streamReader = new StreamReader(@"C:\Users\Izagakhmaevra\Desktop\Excel\csvExcel.csv"))
+            {
+                //using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                using (var csvReader = new CsvReader(streamReader, config))
+                {
+                    csvReader.Context.TypeConverterOptionsCache.GetOptions<DateTime?>().NullValues.Add("NULL");
+                    var records = csvReader.GetRecord<Launch>();
+
+                    //var records = csvReader.GetRecords<Launch>().ToList();
+                }
+            }
         }
     }
 
-    public class Foo
+    public class Launch
     {
+        [Name("ID")]
         public int Id { get; set; }
+        [Name("Name")]
         public string Name { get; set; }
+
     }
-    
-    //public static void Print()
-    //{
-    //    Console.WriteLine();
-    //}
 }
