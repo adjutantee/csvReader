@@ -7,7 +7,7 @@ using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 
 
-namespace TESTxml
+namespace CsvHelper
 {
     public class Program
     {
